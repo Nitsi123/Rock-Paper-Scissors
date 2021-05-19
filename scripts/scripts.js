@@ -73,53 +73,105 @@ function playRound(playerSelection, computerSelection)
 }
 
 
-function game(){
-    let totalWins = 0;
-    let totalLoses = 0;
-    console.log("Play a 5 round game");
-    console.log("First to 5 wins")
-    let i=1;
-    while(i)
+function game(result){
+   
+    // console.log("Play a 5 round game");
+    // console.log("First to 5 wins")
+    
+    if(result.search("Tie!") != -1){
+        console.log("That was a tie, try again")
+    }
+    else if (result.search("Win!") != -1)
     {
-
-        let playerSelection = prompt("Give a value - Rock or Paper or Scissors");
-
-        let computerSelection = computerPlay();
-
-        console.log(`The computer selected ${computerSelection}`);
-
-        console.log(playRound(playerSelection, computerSelection));
-
-        
-        if(playRound(playerSelection, computerSelection).search("Tie!") != -1){
-            console.log("That was a tie, try again")
-        }
-        else if (playRound(playerSelection, computerSelection).search("Win!") != -1)
-        {
-            totalWins = totalWins + 1;
-        }
-        else if (playRound(playerSelection, computerSelection).search("Lose!") != -1)
-        {
-            totalLoses = totalLoses + 1;
-        }
-
-        console.log(`Total Wins: ${totalWins}`);
-        console.log(`Total Loses: ${totalLoses}`);
-        if (totalWins == 5 || totalLoses == 5)
-        {
-            break;
-        }
-
+        totalWins = totalWins + 1;
+    }
+    else if (result.search("Lose!") != -1)
+    {
+        totalLoses = totalLoses + 1;
     }
 
-    if(totalWins > totalLoses)
-    {
-        console.log("Great!, you won the 5 round game");
-    }
 
-    else if(totalWins < totalLoses)
-    {
-        console.log("Sad!, you lost the 5 round game");
-    }
+    // if (totalWins == 5 || totalLoses == 5)
+    // {
+    //     break;
+    // }
+
+
+    // if(totalWins > totalLoses)
+    // {
+    //     console.log("Great!, you won the 5 round game");
+    // }
+
+    // else if(totalWins < totalLoses)
+    // {
+    //     console.log("Sad!, you lost the 5 round game");
+    // }
 
 }
+
+function removeChildNodes(parentNode){
+    while(parentNode.firstChild)
+    {
+        parentNode.removeChild(parentNode.firstChild);
+    }
+}
+
+let totalWins =0;
+let totalLoses =0;
+
+const buttonList = Array.from(document.querySelectorAll(".button"))
+buttonList.forEach(button => { button.addEventListener("click", function(e){
+
+    const resultDiv = document.querySelector(".game-result");
+    removeChildNodes(resultDiv);
+
+    const playerSelection = button.textContent;
+    console.log(playerSelection);
+    const computerSelection = computerPlay();
+    result = playRound(playerSelection, computerSelection);
+    console.log(result);
+
+    const resultPara = document.createElement("p");
+
+    const computerSelected = document.createElement("p");
+    computerSelected.textContent = "The computer selected " + computerSelection;
+    resultPara.textContent = result;
+    
+    resultDiv.appendChild(computerSelected);
+    resultDiv.appendChild(resultPara);
+
+    game(result, totalWins, totalLoses);
+
+    const winPara = document.createElement("p");
+    const losePara = document.createElement("p");
+
+    winPara.textContent = "Total Wins: " + totalWins;
+    losePara.textContent = "Total Loses: " + totalLoses;
+
+    resultDiv.appendChild(winPara);
+    resultDiv.appendChild(losePara);
+
+    if (totalWins == 5 || totalLoses == 5)
+    {
+        removeChildNodes(resultDiv)
+        let finalResult = document.createElement("p");
+
+        if(totalWins > totalLoses)
+        {
+            finalResult.textContent = "Great!, you won the 5 round game";
+        }
+
+    else if(totalWins < totalLoses)
+        {
+            finalResult.textContent = "Sad!, you lost the 5 round game";
+        }
+
+        resultDiv.appendChild(finalResult);
+        totalWins =0;
+        totalLoses =0;
+    }
+
+
+});
+    
+});
